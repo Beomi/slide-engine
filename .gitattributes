@@ -1,0 +1,12 @@
+presentations/** filter=git-crypt diff=git-crypt
+presentations/**/*.md filter=git-crypt diff=git-crypt
+presentations/**/*.yaml filter=git-crypt diff=git-crypt
+presentations/**/*.yml filter=git-crypt diff=git-crypt
+presentations/**/*.json filter=git-crypt diff=git-crypt
+presentations/**/*.svg filter=git-crypt diff=git-crypt
+presentations/**/*.png filter=git-crypt diff=git-crypt
+presentations/**/*.jpg filter=git-crypt diff=git-crypt
+presentations/**/*.jpeg filter=git-crypt diff=git-crypt
+presentations/**/*.gif filter=git-crypt diff=git-crypt
+presentations/**/*.webp filter=git-crypt diff=git-crypt
+presentations/**/*.pdf filter=git-crypt diff=git-crypt

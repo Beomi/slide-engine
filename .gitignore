@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build output
+**/output/
+**/slides.md
+
+# Claude Code local state
+.claude/auto-memory/
+
+# Reference repos
+samples/
+
+# OS files
+.DS_Store
+
+# git-crypt key (if exported locally)
+*.git-crypt-key

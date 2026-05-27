@@ -1,0 +1,12 @@
+{
+  "respectGitignore": true,
+  "outputStyle": "concise",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  }
+}
