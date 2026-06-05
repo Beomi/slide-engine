@@ -16,3 +16,7 @@ samples/
 
 # git-crypt key (if exported locally)
 *.git-crypt-key
+
+
+# Generated diagram artifacts
+**/images/generated/

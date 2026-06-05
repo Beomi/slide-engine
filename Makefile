@@ -3,7 +3,7 @@
 # Usage:
 #   make html DIR=/path/to/presentation THEME=bai-flat
 #   make pdf  DIR=/path/to/presentation THEME=bai-flat
-#   make setup   # npm install
+#   make setup   # brew deps (git-crypt, gnupg) + npm ci
 
 TEMPLATE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 THEME        ?= bai-flat
@@ -17,7 +17,7 @@ MERGED_THEME := $(OUTPUT_DIR)/.merged-theme.css
 
 .DEFAULT_GOAL := help
 
-.PHONY: help setup html pdf html-wl pdf-wl clean check-dir
+.PHONY: help setup unlock unlock-help html pdf html-wl pdf-wl clean check-dir
 
 help:
 	@echo ""
@@ -25,7 +25,8 @@ help:
 	@echo "==============================="
 	@echo ""
 	@echo "Targets:"
-	@echo "  setup            Install dependencies (npm install)"
+	@echo "  setup            Install brew deps + npm ci + attempt git-crypt unlock"
+	@echo "  unlock           Attempt git-crypt unlock; print key-setup help on failure"
 	@echo "  html             Build HTML slides"
 	@echo "  pdf              Build PDF slides"
 	@echo "  html-wl          Build whitelabel HTML slides"
@@ -40,7 +41,40 @@ help:
 	@echo ""
 
 setup:
-	npm install
+	@command -v brew >/dev/null 2>&1 || (echo "Error: Homebrew required. Install from https://brew.sh" && exit 1)
+	brew install git-crypt gnupg
+	npm ci
+	@$(MAKE) --no-print-directory unlock
+
+unlock:
+	@if git-crypt unlock 2>/dev/null; then \
+		echo "git-crypt: unlocked."; \
+	else \
+		$(MAKE) --no-print-directory unlock-help; \
+	fi
+
+unlock-help:
+	@echo ""
+	@echo "git-crypt unlock failed. The repo decryption key is not available on this machine."
+	@echo ""
+	@echo "Option A: Symmetric key (simplest, if you have a backup)"
+	@echo "  1. Copy the backup key from another device to:"
+	@echo "       ~/.gnupg/slide-engine-git-crypt.key"
+	@echo "  2. Run: git-crypt unlock ~/.gnupg/slide-engine-git-crypt.key"
+	@echo ""
+	@echo "Option B: GPG private key (transfer from another device)"
+	@echo "  On the source device (where the repo is already unlocked):"
+	@echo "    gpg --list-secret-keys --keyid-format=long"
+	@echo "    gpg --export-secret-keys --armor <KEY_ID> > slide-engine-gpg.asc"
+	@echo "    gpg --export-ownertrust > slide-engine-trust.txt"
+	@echo "  Transfer slide-engine-gpg.asc + slide-engine-trust.txt securely"
+	@echo "  (scp over SSH, encrypted USB, 1Password secure note, etc.)."
+	@echo "  On this device:"
+	@echo "    gpg --import slide-engine-gpg.asc"
+	@echo "    gpg --import-ownertrust slide-engine-trust.txt"
+	@echo "    git-crypt unlock"
+	@echo "    shred -u slide-engine-gpg.asc slide-engine-trust.txt"
+	@echo ""
 
 check-dir:
 	@test -d "$(DIR)/sections" || (echo "Error: $(DIR)/sections not found" && exit 1)

@@ -2,6 +2,7 @@
   "private": true,
   "devDependencies": {
     "@marp-team/marp-cli": "^4.x",
+    "@mermaid-js/mermaid-cli": "^11.15.0",
     "markdown-it-cjk-friendly": "^1.x"
   }
 }

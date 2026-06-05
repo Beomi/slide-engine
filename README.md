@@ -7,9 +7,14 @@ Marp-based slide build system with theme support and Claude Code integration. Pr
 ## Setup
 
 ```bash
-make setup        # npm install
-git-crypt unlock  # decrypt presentations/ (requires GPG key)
+make setup   # brew: git-crypt + gnupg, npm ci, attempt git-crypt unlock
 ```
+
+`make setup` installs Homebrew deps, runs `npm ci`, and attempts `git-crypt unlock`. On a fresh machine without the decryption key, it prints instructions for transferring a GPG private key (or the symmetric backup key) from another device. Re-run `make unlock` after the key is in place.
+
+## Privacy
+
+Presentation source content is git-crypt encrypted, but the encryption is meaningless if the topic leaks elsewhere. Commit messages, branch names, PR titles MUST refer to decks by opaque ID (`p007`) only -- never by topic. See `CLAUDE.md` "Privacy (CRITICAL)" for the full rule. `public/` folder names are exempt (intentionally public artifacts).
 
 ## Build
 

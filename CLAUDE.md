@@ -33,9 +33,23 @@ slide-engine/
 
 Presentation source content (`presentations/`) is encrypted via git-crypt. On GitHub the files appear as encrypted blobs. Locally, after `git-crypt unlock`, they are plaintext.
 
-- `public/` is NOT encrypted (intentionally public artifacts)
-- To set up on a new machine: import the GPG key, clone, then `git-crypt unlock`
+- `public/` is NOT encrypted (intentionally public artifacts; folder names there may reveal topic and that is acceptable)
+- To set up on a new machine: `make setup` (installs git-crypt, gnupg, npm deps), then import the GPG key and `git-crypt unlock`
 - Backup symmetric key is at `~/.gnupg/slide-engine-git-crypt.key`
+
+## Privacy (CRITICAL)
+
+The git-crypt encryption is meaningless if the topic leaks through unencrypted surfaces. **Never write what a deck is about anywhere outside `presentations/` and `public/`.**
+
+Unencrypted surfaces that MUST stay opaque:
+
+- **Commit messages**: refer to decks by opaque ID only (`p007`), never by topic. Bad: `Add p007: CXL KVCache offload benchmark deck`. Good: `Add p007` or `Update p007 sections`.
+- **Branch names**: use IDs or generic verbs (`p007-edits`, `fix-build`), never topic keywords.
+- **PR titles and bodies**: same rule. Topic words belong inside the encrypted files only.
+- **File names outside `presentations/`**: scripts, configs, issues should not embed topic strings.
+- **Tags, release notes, anything pushed to the remote**: opaque IDs only.
+
+The `/commit` skill and any commit message you author MUST follow this. If unsure whether a word leaks the topic, omit it.
 
 ## Build
 

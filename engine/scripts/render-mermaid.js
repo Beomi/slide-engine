@@ -54,7 +54,28 @@ if (!mmdc) {
   process.exit(0)
 }
 
+if (!process.env.PUPPETEER_EXECUTABLE_PATH) {
+  const candidates = [
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    '/Applications/Chromium.app/Contents/MacOS/Chromium',
+    '/usr/bin/google-chrome',
+    '/usr/bin/chromium',
+  ]
+  for (const c of candidates) {
+    if (fs.existsSync(c)) {
+      process.env.PUPPETEER_EXECUTABLE_PATH = c
+      break
+    }
+  }
+}
+
+const puppeteerConfigPath = path.join(outputDir, '.puppeteer-config.json')
+
 fs.mkdirSync(outputDir, { recursive: true })
+
+if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+  fs.writeFileSync(puppeteerConfigPath, JSON.stringify({ executablePath: process.env.PUPPETEER_EXECUTABLE_PATH }))
+}
 
 let counter = 0
 const result = slides.replace(mermaidRe, (_, content) => {
@@ -65,7 +86,8 @@ const result = slides.replace(mermaidRe, (_, content) => {
 
   fs.writeFileSync(tmpInput, content, 'utf-8')
   try {
-    execSync(`${mmdc} -i "${tmpInput}" -o "${svgPath}" --quiet`, { stdio: 'ignore' })
+    const puppeteerFlag = fs.existsSync(puppeteerConfigPath) ? ` -p "${puppeteerConfigPath}"` : ''
+    execSync(`${mmdc} -i "${tmpInput}" -o "${svgPath}"${puppeteerFlag} --quiet`, { stdio: 'ignore' })
     console.log(`render-mermaid: rendered ${svgFile}`)
   } catch (err) {
     console.error(`render-mermaid: failed to render block ${counter}, leaving as-is`)

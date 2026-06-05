@@ -72,9 +72,10 @@
     /* highlight-boxes 기본 띠 색상 (슬라이드별 오버라이드 가능) */
     --hbox-color-1: var(--cmap-plasma-1);
     --hbox-color-2: var(--cmap-plasma-3);
-    --hbox-color-3: var(--cmap-plasma-5);
-    --hbox-color-4: var(--cmap-plasma-7);
-    --hbox-color-5: var(--cmap-plasma-9);
+    --hbox-color-3: var(--cmap-plasma-4);
+    --hbox-color-4: var(--cmap-plasma-5);
+    --hbox-color-5: var(--cmap-plasma-6);
+    --hbox-color-6: var(--cmap-plasma-7);
 
     /* SWOT 분석 강조색 */
     --color-swot-strg: hsl(120, 45%, 35%); /* 강점: 녹색 계열 */
@@ -206,8 +207,7 @@ section code {
 
 section pre {
     background: #f0f4f8;
-    border-left: 4px solid var(--color-accent);
-    border-radius: 0 6px 6px 0;
+    border-radius: 6px;
     padding: 16px 20px;
     font-size: 0.82em;
     overflow: hidden;
@@ -227,6 +227,20 @@ section pre code {
 section h2 code {
     background: transparent;
     border: none;
+    color: inherit;
+}
+
+/* inline code inside a colored header band (highlight-boxes / numbered-dev-items /
+   divider). The default light-grey pill is illegible on a dark/saturated band, so
+   tint the chip as a slightly lighter shade of the band itself (translucent white
+   overlay) and inherit the band's text color. */
+section.highlight-boxes h3 code,
+section.numbered-dev-items h3 code,
+section.divider h1 code,
+section.divider h2 code,
+section.divider h3 code {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.28);
     color: inherit;
 }
 
@@ -1045,6 +1059,9 @@ section.highlight-boxes h3:nth-of-type(4) {
 section.highlight-boxes h3:nth-of-type(5) {
     background: var(--hbox-color-5);
 }
+section.highlight-boxes h3:nth-of-type(6) {
+    background: var(--hbox-color-6);
+}
 
 section.highlight-boxes ul,
 section.highlight-boxes ol {
@@ -1131,6 +1148,91 @@ section.focus > ul li {
     strong {
         font-weight: 600;
     }
+}
+
+/* ──────────────────────────────────────────────
+   레이아웃: 중앙 인용 박스 (quote)
+   사용법: <!-- _class: quote -->
+   blockquote가 슬라이드 중앙에 흰 박스로 표시됩니다.
+   여러 문단을 포함할 수 있습니다.
+   ────────────────────────────────────────────── */
+section.quote {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+section.quote > blockquote {
+    border-left: none;
+    border: 2px solid var(--color-border);
+    border-radius: 10px;
+    background: transparent;
+    padding: 44px 56px;
+    text-align: center;
+    font-size: 28px;
+    line-height: 1.55;
+    color: var(--color-fg);
+    margin: 0 auto;
+    max-width: 82%;
+}
+
+section.quote > blockquote p {
+    margin: 0.45em 0;
+}
+
+section.quote > blockquote p:first-child {
+    margin-top: 0;
+    font-size: 32px;
+    line-height: 1.4;
+}
+
+section.quote > blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+section.quote > blockquote strong {
+    color: color-mix(in oklab, var(--color-brand), black 5%);
+    background-color: rgb(from var(--color-brand) r g b / 0.16);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 800;
+}
+
+/* ──────────────────────────────────────────────
+   레이아웃: 2단 + 하단 강조 (split-statement)
+   사용법: <!-- _class: split-statement -->
+   상단 2단 그리드 + 하단 전체 너비 강조 박스 (blockquote)
+   ────────────────────────────────────────────── */
+section.split-statement {
+    display: grid;
+    grid-template-columns: var(--cols, 1fr 1fr);
+    grid-template-rows: auto auto;
+    column-gap: var(--col-gap, 28px);
+    row-gap: 28px;
+    align-content: center;
+}
+
+section.split-statement > div {
+    min-width: 0;
+}
+
+section.split-statement > blockquote {
+    grid-column: 1 / -1;
+    border-left: none;
+    border: 2px solid var(--color-border);
+    border-radius: 8px;
+    background: transparent;
+    padding: 16px 28px;
+    text-align: center;
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--color-fg);
+    margin: 0;
+}
+
+section.split-statement > blockquote strong {
+    color: var(--color-primary);
+    font-weight: 700;
 }
 
 /* ──────────────────────────────────────────────
@@ -1815,10 +1917,6 @@ section.references::after {
    2~5개 지표를 균등 분할합니다.
    ────────────────────────────────────────────── */
 section.big-numbers {
-    h2 {
-        text-align: center;
-        margin-bottom: 0.8em;
-    }
 
     .metrics {
         display: flex;
