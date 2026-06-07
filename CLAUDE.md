@@ -17,7 +17,7 @@ slide-engine/
 │   └── p{NNN}/               # Opaque presentation ID
 │       ├── sections/         # Slide files (00.md, 01.md, ...)
 │       ├── research/         # Research docs (r00.md, r01.md, ...)
-│       ├── images/           # Figures and generated images
+│       ├── images/figures/   # Figures (f00.svg, f01.png, ...) + INDEX.md
 │       └── synopsis.md       # Topic and structure outline
 ├── public/                   # Deployed HTML + PDF (served by GitHub Pages)
 ├── docs/
@@ -33,6 +33,7 @@ slide-engine/
 
 Presentation source content (`presentations/`) is encrypted via git-crypt. On GitHub the files appear as encrypted blobs. Locally, after `git-crypt unlock`, they are plaintext.
 
+- git-crypt encrypts file **contents only, never paths**. Directory and file *names* under `presentations/` are visible in cleartext on GitHub. So every filename must itself be opaque (see Privacy below).
 - `public/` is NOT encrypted (intentionally public artifacts; folder names there may reveal topic and that is acceptable)
 - To set up on a new machine: `make setup` (installs git-crypt, gnupg, npm deps), then import the GPG key and `git-crypt unlock`
 - Backup symmetric key is at `~/.gnupg/slide-engine-git-crypt.key`
@@ -47,9 +48,14 @@ Unencrypted surfaces that MUST stay opaque:
 - **Branch names**: use IDs or generic verbs (`p007-edits`, `fix-build`), never topic keywords.
 - **PR titles and bodies**: same rule. Topic words belong inside the encrypted files only.
 - **File names outside `presentations/`**: scripts, configs, issues should not embed topic strings.
+- **File names INSIDE `presentations/`**: git-crypt does not encrypt paths, so these leak too. Use opaque names only: `sections/00.md`, `research/r00.md`, `images/figures/f00.svg`. Never name a figure `microwave-vs-fiber.svg` or `kvcache-arch.png`.
 - **Tags, release notes, anything pushed to the remote**: opaque IDs only.
 
 The `/commit` skill and any commit message you author MUST follow this. If unsure whether a word leaks the topic, omit it.
+
+### Figure naming + INDEX.md
+
+Every `images/figures/` folder holds opaquely-named figures (`f00.<ext>`, `f01.<ext>`, ...) plus an `INDEX.md` mapping each opaque name to a real description. `INDEX.md` is git-crypt encrypted, so descriptions there are safe. The opaque name is what authors reference from slides (`![alt](images/figures/f03.svg)`); `INDEX.md` is how you (or a human) recall what `f03.svg` actually is. When adding a figure: pick the next free `fNN`, drop the file in, and add a row to that folder's `INDEX.md`. The same opaque-name rule applies to any other content folder (`generated/`, etc.).
 
 ## Build
 
