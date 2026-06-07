@@ -46,7 +46,8 @@ Rules:
 
 - **Two-column `<div>` blank lines:** Marp requires blank lines around `<div>` tags inside slides for markdown to render inside them.
 - **Four-box `<b>` syntax:** The four-box layout uses `<b>Title</b>` tags for box headers, not `**bold**`.
-- **Image path conventions:** Local images use relative paths (`figures/arch.svg`). Theme assets use the `/assets/...` prefix (resolved to `THEME_DIR/assets/` by the engine).
+- **Image path conventions:** Local images use relative paths (`images/figures/f03.svg`). Theme assets use the `/assets/...` prefix (resolved to `THEME_DIR/assets/` by the engine).
+- **Opaque figure names:** git-crypt does not encrypt paths, so figure filenames are public on GitHub. Name every figure `fNN.<ext>` (next free index in the folder), never something topic-revealing, and record what it is in that folder's encrypted `INDEX.md`. See CLAUDE.md "Figure naming + INDEX.md".
 - **Layout class directive placement:** `<!-- _class: layout-name -->` must be the first line after the slide separator.
 - **Speaker notes:** Use `<!-- ... -->` HTML comments. Must appear after all slide content on the slide.
 - **Emoji rendering:** Marp uses twemoji, which converts Unicode emoji to `<img>` elements that break inline layout. Avoid Unicode emoji in slides.
